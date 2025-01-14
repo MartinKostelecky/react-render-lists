@@ -1,19 +1,52 @@
+import PropTypes, { string } from 'prop-types';
 
+function List(props) {
 
-function List() {
+    const category = props.category;
 
-    const actionHeroes = [  {id: 1, name: "Arnold Swarzenegger", movies: ["Terminator","Kindergarden Cop"]}, 
-                            {id: 2, name: "Silvester Stallone", movies: ["Rambo","Rocky"]}, 
-                            {id: 3, name: "Jean Claude van Damme", movies: ["Bloodsport", "Kickboxer"]}, 
-                            {id: 4, name: "Chuck Norris", movies:["Missing in Action", "The Delta Force"]}];
+    const itemList = props.items;
 
-    actionHeroes.sort();
+    //sorting
+    //actionHeroes.sort((a,b) => a.name.localeCompare(b.name)); // Alphabetical sort
+    //actionHeroes.sort((a,b) => b.name.localeCompare(a.name)); // Reverse alphabetical sort
+    //actionHeroes.sort((a,b) => a.name.length - b.name.length); // Numeric ascending sort
 
-    const listItems = actionHeroes.map(actionHero => <li key={actionHero.id}>
-                                                        {actionHero.name}: &nbsp;
-                                                        {actionHero.movies.map(movie => movie.concat(", "))}</li>)
+    //filtering
+    //const actionHeroesWithoutLetterO = actionHeroes.filter(actionHero => !actionHero.name.includes("o"));
 
-    return (<ol>{listItems}</ol>);
+    //const actionHeroesWithoutLetterO = actionHeroes.filter(actionHero => !actionHero.movies.includes("Terminator"));
+
+    
+    const listItems = itemList.map(item => { 
+        const medium = item.movies ? "Movies: " : "Games: "; 
+        return ( 
+            <li key={item.id}> 
+                {item.name} <b>{medium}</b> &nbsp; 
+                {(item.movies || item.games).join(", ")} 
+            </li> 
+        ); 
+    });            
+
+    return (<>
+                <h3 className="list-category">{category}</h3>
+                <ol className="list-items">{listItems}</ol>
+            </>
+            );
+
 }
 
-export default List
+List.propTypes = {
+    category: PropTypes.string,
+    items: PropTypes.arrayOf(PropTypes.shape({id: PropTypes.number,
+                                                name: PropTypes.string,
+                                                movies: PropTypes.arrayOf(PropTypes.string),
+                                                games: PropTypes.arrayOf(PropTypes.string)
+    }))
+}
+
+List.defaultProps = {
+    category: "Category",
+    items: []
+}
+
+export default List;
